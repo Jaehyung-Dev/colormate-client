@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import Join from './components/Join.vue'
 </script>
 
 <template>
-  <Join/>
+  <router-view />
 </template>
 
 <style scoped>

@@ -11,6 +11,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --main-color: #a259e6;
 }
 
 a {
@@ -76,4 +78,22 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.signup-btn {
+  width: 100%;
+  background: linear-gradient(90deg, var(--main-color) 0%, #62e0c6 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px 0 rgba(162, 89, 230, 0.08);
+  transition: background 0.5s, box-shadow 0.5s;
+}
+.signup-btn:hover {
+  background: linear-gradient(90deg, #62e0c6 0%, var(--main-color) 100%);
+  box-shadow: 0 4px 16px 0 rgba(162, 89, 230, 0.15);
 }

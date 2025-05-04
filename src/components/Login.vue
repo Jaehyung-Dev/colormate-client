@@ -1,11 +1,11 @@
 <template>
-  <div class="signup-bg">
-    <div class="signup-card">
+  <div class="login-bg">
+    <div class="login-card">
       <div class="logo-container">
         <h1 class="site-title">Colormate</h1>
       </div>
-      <h2 class="signup-title">회원가입</h2>
-      <form @submit.prevent="handleSignup">
+      <h2 class="login-title">로그인</h2>
+      <form @submit.prevent="handleLogin">
         <div class="input-group">
           <label>이메일</label>
           <input v-model="email" type="email" required />
@@ -14,11 +14,7 @@
           <label>비밀번호</label>
           <input v-model="password" type="password" required />
         </div>
-        <div class="input-group">
-          <label>닉네임</label>
-          <input v-model="nickname" type="text" required />
-        </div>
-        <button type="submit" class="signup-btn">회원가입</button>
+        <button type="submit" class="login-btn">로그인</button>
       </form>
     </div>
   </div>
@@ -30,25 +26,23 @@ import axios from 'axios'
 
 const email = ref('')
 const password = ref('')
-const nickname = ref('')
 
-const handleSignup = async () => {
+const handleLogin = async () => {
   try {
-    await axios.post(`/api/user/signup`, {
+    await axios.post(`/api/user/login`, {
       email: email.value,
       password: password.value,
-      nickname: nickname.value,
     })
-    
+    alert('로그인 성공!')
   } catch (error) {
     console.error(error)
-    alert('회원가입 실패')
+    alert('로그인 실패')
   }
 }
 </script>
 
 <style scoped>
-.signup-bg {
+.login-bg {
   min-height: 100vh;
   background: linear-gradient(135deg, #ffe0ec 0%, #e0f7fa 100%);
   display: flex;
@@ -62,7 +56,7 @@ const handleSignup = async () => {
   top: 0;
   left: 0;
 }
-.signup-card {
+.login-card {
   background: #fffafc;
   border-radius: 24px;
   box-shadow: 0 4px 24px 0 rgba(180, 180, 255, 0.15);
@@ -83,11 +77,11 @@ const handleSignup = async () => {
   font-family: 'Montserrat', 'Pretendard', sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
-  color: #a259e6;
+  color: var(--main-color);
   margin-bottom: 4px;
   letter-spacing: 1px;
 }
-.signup-title {
+.login-title {
   font-size: 1.2rem;
   color: #5e5e5e;
   margin-bottom: 24px;
@@ -101,7 +95,7 @@ const handleSignup = async () => {
 }
 .input-group label {
   font-size: 0.95rem;
-  color: #a259e6;
+  color: var(--main-color);
   margin-bottom: 6px;
   font-weight: 500;
 }
@@ -115,13 +109,13 @@ const handleSignup = async () => {
   color: gray;
 }
 .input-group input:focus {
-  border: 1.5px solid #a259e6;
+  border: 1.5px solid var(--main-color);
   outline: none;
   background: #fff;
 }
-.signup-btn {
+.login-btn {
   width: 100%;
-  background: linear-gradient(90deg, #a259e6 0%, #62e0c6 100%);
+  background: linear-gradient(90deg, var(--main-color) 0%, #62e0c6 100%);
   color: #fff;
   font-weight: 600;
   font-size: 1.1rem;
@@ -130,25 +124,24 @@ const handleSignup = async () => {
   padding: 12px 0;
   margin-top: 8px;
   box-shadow: 0 2px 8px 0 rgba(162, 89, 230, 0.08);
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 0.5s, box-shadow 0.5s;
 }
-.signup-btn:hover {
-  background: linear-gradient(90deg, #62e0c6 0%, #a259e6 100%);
+.login-btn:hover {
+  background: linear-gradient(90deg, #62e0c6 0%, var(--main-color) 100%);
   box-shadow: 0 4px 16px 0 rgba(162, 89, 230, 0.15);
 }
 @media (min-width: 768px) {
-  .signup-card {
+  .login-card {
     padding: 50px 40px 40px 40px;
   }
   .site-title {
     font-size: 3rem;
   }
-  .signup-title {
+  .login-title {
     font-size: 1.4rem;
   }
   .input-group input {
     padding: 12px 14px;
   }
 }
-</style>
-  
+</style> 
