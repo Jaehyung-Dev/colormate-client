@@ -27,6 +27,9 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const email = ref('')
 const password = ref('')
@@ -39,7 +42,7 @@ const handleSignup = async () => {
       password: password.value,
       nickname: nickname.value,
     })
-    
+    router.push('/');
   } catch (error) {
     console.error(error)
     alert('회원가입 실패')
@@ -54,7 +57,7 @@ const handleSignup = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 0;
   width: 100%;
   height: 100vh;
   margin: 0;
@@ -84,7 +87,7 @@ const handleSignup = async () => {
   font-size: 2.5rem;
   font-weight: 700;
   color: #a259e6;
-  margin-bottom: 4px;
+  margin: 0;
   letter-spacing: 1px;
 }
 .signup-title {

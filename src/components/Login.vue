@@ -48,7 +48,7 @@ const handleLogin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 0;
   width: 100%;
   height: 100vh;
   margin: 0;
@@ -78,7 +78,7 @@ const handleLogin = async () => {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--main-color);
-  margin-bottom: 4px;
+  margin: 0;
   letter-spacing: 1px;
 }
 .login-title {
