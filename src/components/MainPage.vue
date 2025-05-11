@@ -3,8 +3,10 @@
     <header class="header">
       <h1 class="site-title">Colormate</h1>
       <nav class="nav">
-        <router-link to="/join" class="nav-link">회원가입</router-link>
-        <router-link to="/login" class="nav-link">로그인</router-link>
+        <template v-if="!isLogin">
+          <router-link to="/join" class="nav-link">회원가입</router-link>
+          <router-link to="/login" class="nav-link">로그인</router-link>
+        </template>
       </nav>
     </header>
     <main class="main-content">
@@ -151,12 +153,16 @@
         </div>
       </div>
     </main>
+    <FeedbackButton />
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
+import FeedbackButton from './FeedbackButton.vue';
+
+const isLogin = ref(false);
 
 const selectedSeason = ref('spring');
 const showAddModal = ref(false);
@@ -174,8 +180,8 @@ const colorCombinations = ref({
 
 const fetchColorCombinations = async () => {
   try {
-    // const res = await axios.get('http://localhost:8080/color/combinations');
-    const res = await axios.get('/api/color/combinations');
+    const res = await axios.get('http://localhost:8080/color/combinations');
+    // const res = await axios.get('/api/color/combinations');
     const data = res.data;
 
     const toneOnTone = []
@@ -227,8 +233,8 @@ const addNewCombination = async () => {
   };
 
   try {
-    // await axios.post('http://localhost:8080/color/combination', combination);
-    await axios.post('/api/color/combination', combination);
+    await axios.post('http://localhost:8080/color/combination', combination);
+    // await axios.post('/api/color/combination', combination);
     await fetchColorCombinations();
 
     showAddModal.value = false;
@@ -255,6 +261,7 @@ const addNewCombination = async () => {
 
 onMounted(() => {
   fetchColorCombinations();
+  isLogin.value = !!localStorage.getItem('token');
 });
 </script>
 
@@ -345,6 +352,7 @@ onMounted(() => {
   flex-direction: column;
   gap: 40px;
   width: 100%;
+  margin-bottom: 2rem;
 }
 
 .combination-section {

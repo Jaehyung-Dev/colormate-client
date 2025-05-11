@@ -9,6 +9,12 @@
         <div class="input-group">
           <label>이메일</label>
           <input v-model="email" type="email" required />
+          <button class="verify-btn" @click="checkEmail">
+            중복확인
+          </button>
+          <span v-if="emailStatus === 'checking'" class="status-text checking">확인 중...</span>
+          <span v-else-if="emailStatus === 'available'" class="status-text available">사용 가능한 이메일입니다.</span>
+          <span v-else-if="emailStatus === 'unavailable'" class="status-text unavailable">이미 사용 중인 이메일입니다.</span>
         </div>
         <div class="input-group">
           <label>비밀번호</label>
@@ -34,10 +40,36 @@ const router = useRouter()
 const email = ref('')
 const password = ref('')
 const nickname = ref('')
+const emailStatus = ref('') // 'checking', 'available', 'unavailable'
+
+const checkEmail = async () => {
+  if (!email.value) {
+    alert('이메일을 입력해주세요.')
+    return
+  }
+
+  emailStatus.value = 'checking'
+  try {
+    const res = await axios.post(`/api/user/check-email`, {
+      email: email.value
+    })
+    emailStatus.value = res.data.available ? 'available' : 'unavailable'
+  } catch (error) {
+    console.error(error)
+    alert('이메일 확인 중 오류가 발생했습니다.')
+    emailStatus.value = ''
+  }
+}
 
 const handleSignup = async () => {
+  // if (emailStatus.value !== 'available') {
+  //   alert('이메일 중복확인을 해주세요.')
+  //   return
+  // }
+
   try {
-    await axios.post(`/api/user/signup`, {
+    // await axios.post(`/api/user/signup`, {
+    await axios.post(`http://localhost:8080/user/signup`, {
       email: email.value,
       password: password.value,
       nickname: nickname.value,
@@ -138,6 +170,53 @@ const handleSignup = async () => {
 .signup-btn:hover {
   background: linear-gradient(90deg, #62e0c6 0%, #a259e6 100%);
   box-shadow: 0 4px 16px 0 rgba(162, 89, 230, 0.15);
+}
+
+.verify-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: linear-gradient(90deg, #a259e6 0%, #62e0c6 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px 0 rgba(162, 89, 230, 0.08);
+}
+
+.verify-btn:hover {
+  background: linear-gradient(90deg, #62e0c6 0%, #a259e6 100%);
+  box-shadow: 0 4px 16px 0 rgba(162, 89, 230, 0.15);
+  transform: translateY(-2px);
+}
+
+.status-text {
+  font-size: 0.85rem;
+  margin-top: 6px;
+  padding-left: 12px;
+}
+
+.status-text.checking {
+  color: #5e5e5e;
+}
+
+.status-text.available {
+  color: #62e0c6;
+}
+
+.status-text.unavailable {
+  color: #ff6b6b;
+}
+
+@media (max-width: 480px) {
+  .verify-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 @media (min-width: 768px) {
   .signup-card {

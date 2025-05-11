@@ -23,17 +23,25 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import router from '../router'
 
 const email = ref('')
 const password = ref('')
 
 const handleLogin = async () => {
   try {
-    await axios.post(`/api/user/login`, {
+    const response = await axios.post(`http://localhost:8080/login`, {
       email: email.value,
       password: password.value,
     })
-    alert('로그인 성공!')
+
+    const token = response.headers['authorization'];
+
+    if(token) {
+      localStorage.setItem('token', token);
+    }
+
+    router.push('/');
   } catch (error) {
     console.error(error)
     alert('로그인 실패')
