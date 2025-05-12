@@ -14,7 +14,7 @@
         <select v-model="type" required>
           <option value="">선택해주세요</option>
           <option value="bug">버그 리포트</option>
-          <option value="feature">기능 제안</option>
+          <option value="feat">기능 제안</option>
           <option value="improvement">개선사항</option>
           <option value="other">기타</option>
         </select>
@@ -68,10 +68,10 @@ const feedbackList = ref([])
 // 피드백 유형 한글 레이블
 const getTypeLabel = (type) => {
   const labels = {
-    bug: '버그 리포트',
-    feature: '기능 제안',
-    improvement: '개선사항',
-    other: '기타'
+    BUG: '버그 리포트',
+    FEAT: '기능 제안',
+    IMPROVEMENT: '개선사항',
+    OTHER: '기타'
   }
   return labels[type] || type
 }
@@ -90,31 +90,33 @@ const formatDate = (dateString) => {
 
 const submitFeedback = async () => {
   try {
-    isSubmitting.value = true
-    // TODO: API 연동
-    // const response = await fetch('/api/feedback', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     nickname: nickname.value,
-    //     type: type.value,
-    //     content: content.value,
-    //   }),
-    // })
-
-    // 임시 데이터 추가 (실제로는 API 응답으로 대체)
-    feedbackList.value.unshift({
-      id: Date.now(),
-      nickname: nickname.value,
-      type: type.value,
-      content: content.value,
-      createdAt: new Date().toISOString()
+    isSubmitting.value = true;
+    // const response = await fetch(`http://localhost:8080/feedback`, {
+    const response = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nickname: nickname.value,
+        type: type.value?.toUpperCase(),
+        content: content.value,
+      }),
     })
 
+    if(!response.ok) {
+      throw new Error('서버 응답 오류');
+    }
+
     alert('피드백이 성공적으로 전송되었습니다. 감사합니다!')
-    router.push('/')
+
+    // 입력 필드 초기화
+    nickname.value = '';
+    type.value = '';
+    content.value = '';
+
+    await fetchFeedbackList();
+
   } catch (error) {
     console.error('피드백 전송 중 오류가 발생했습니다:', error)
     alert('피드백 전송에 실패했습니다. 다시 시도해주세요.')
@@ -126,29 +128,18 @@ const submitFeedback = async () => {
 // 피드백 목록 가져오기
 const fetchFeedbackList = async () => {
   try {
-    // TODO: API 연동
-    // const response = await fetch('/api/feedback')
-    // feedbackList.value = await response.json()
+    // const response = await fetch('http://localhost:8080/feedback/feedbackList');
+    const response = await fetch('api/feedback/feedbackList');
+    if (!response.ok) {
+      throw new Error('서버 오류');
+    }
 
-    // 임시 데이터 (실제로는 API 응답으로 대체)
-    feedbackList.value = [
-      {
-        id: 1,
-        nickname: '사용자1',
-        type: 'bug',
-        content: '색상 선택 시 가끔 오류가 발생합니다.',
-        createdAt: '2024-03-15T10:30:00'
-      },
-      {
-        id: 2,
-        nickname: '사용자2',
-        type: 'feature',
-        content: '계절별 추천 기능이 있으면 좋을 것 같습니다.',
-        createdAt: '2024-03-14T15:45:00'
-      }
-    ]
+    const data = await response.json();
+    feedbackList.value = data;
+
   } catch (error) {
-    console.error('피드백 목록 로딩 실패:', error)
+    console.error('피드백 목록 로딩 실패:', error);
+    alert('목록을 불러오지 못했습니다.');
   }
 }
 

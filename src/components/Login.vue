@@ -30,7 +30,8 @@ const password = ref('')
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post(`http://localhost:8080/login`, {
+    // const response = await axios.post(`http://localhost:8080/login`, {
+    const response = await axios.post(`/api/login`, {
       email: email.value,
       password: password.value,
     })

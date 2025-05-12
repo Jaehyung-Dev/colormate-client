@@ -68,12 +68,13 @@ const handleSignup = async () => {
   // }
 
   try {
-    // await axios.post(`/api/user/signup`, {
-    await axios.post(`http://localhost:8080/user/signup`, {
+    await axios.post(`/api/user/signup`, {
+    // await axios.post(`http://localhost:8080/user/signup`, {
       email: email.value,
       password: password.value,
       nickname: nickname.value,
     })
+    alert('회원가입 성공');
     router.push('/');
   } catch (error) {
     console.error(error)

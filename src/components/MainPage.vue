@@ -180,8 +180,8 @@ const colorCombinations = ref({
 
 const fetchColorCombinations = async () => {
   try {
-    const res = await axios.get('http://localhost:8080/color/combinations');
-    // const res = await axios.get('/api/color/combinations');
+    // const res = await axios.get('http://localhost:8080/color/combinations');
+    const res = await axios.get('/api/color/combinations');
     const data = res.data;
 
     const toneOnTone = []
@@ -233,8 +233,8 @@ const addNewCombination = async () => {
   };
 
   try {
-    await axios.post('http://localhost:8080/color/combination', combination);
-    // await axios.post('/api/color/combination', combination);
+    // await axios.post('http://localhost:8080/color/combination', combination);
+    await axios.post('/api/color/combination', combination);
     await fetchColorCombinations();
 
     showAddModal.value = false;
