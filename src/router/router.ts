@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainPage from './components/MainPage.vue'
-import Join from './components/Join.vue'
-import Login from './components/Login.vue'
-import Feedback from './components/Feedback.vue'
+import MainPage from '../views/MainPage.vue'
+import Join from '../views/Join.vue'
+import Login from '../views/Login.vue'
+import Feedback from '../views/Feedback.vue'
 
 const routes = [
   { path: '/', component: MainPage },

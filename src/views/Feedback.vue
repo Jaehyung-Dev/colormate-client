@@ -58,6 +58,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+const apiUrl = import.meta.env.VITE_API_URL;
 const router = useRouter()
 const nickname = ref('')
 const type = ref('')
@@ -91,8 +92,7 @@ const formatDate = (dateString) => {
 const submitFeedback = async () => {
   try {
     isSubmitting.value = true;
-    // const response = await fetch(`http://localhost:8080/feedback`, {
-    const response = await fetch('/api/feedback', {
+    const response = await fetch(`${apiUrl}/feedback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -128,8 +128,7 @@ const submitFeedback = async () => {
 // 피드백 목록 가져오기
 const fetchFeedbackList = async () => {
   try {
-    // const response = await fetch('http://localhost:8080/feedback/feedbackList');
-    const response = await fetch('api/feedback/feedbackList');
+    const response = await fetch(`${apiUrl}/feedback/feedbackList`);
     if (!response.ok) {
       throw new Error('서버 오류');
     }

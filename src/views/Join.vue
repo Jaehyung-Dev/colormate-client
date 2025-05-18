@@ -8,23 +8,33 @@
       <form @submit.prevent="handleSignup">
         <div class="input-group">
           <label>이메일</label>
-          <input v-model="email" type="email" required />
-          <button class="verify-btn" @click="checkEmail">
-            중복확인
+          <input v-model="email" type="email" required placeholder="이메일을 입력하세요" :disabled="isVerified"/>
+          <button v-if="email && !isVerified" class="verify-btn" @click="sendCode" type="button">
+            인증번호 요청
           </button>
-          <span v-if="emailStatus === 'checking'" class="status-text checking">확인 중...</span>
-          <span v-else-if="emailStatus === 'available'" class="status-text available">사용 가능한 이메일입니다.</span>
-          <span v-else-if="emailStatus === 'unavailable'" class="status-text unavailable">이미 사용 중인 이메일입니다.</span>
+          <div v-if="post && !isVerified" class="verify-container">
+            <input v-model="code" placeholder="인증번호를 입력하세요">
+            <button class="verify-btn" @click="confirmCode" type="button">
+              인증 확인
+            </button>
+          </div>
         </div>
         <div class="input-group">
           <label>비밀번호</label>
           <input v-model="password" type="password" required />
         </div>
         <div class="input-group">
+          <label>비밀번호확인</label>
+          <input v-model="passwordChk" type="password" required />
+        </div>
+        <div class="input-group">
           <label>닉네임</label>
           <input v-model="nickname" type="text" required />
         </div>
-        <button type="submit" class="signup-btn">회원가입</button>
+        <p v-if="message" style="color: red; font-size: 0.9rem; margin-top: -10px; margin-bottom: 10px;">
+          {{ message }}
+        </p>
+        <button v-if="email && password && passwordChk && nickname && isVerified" type="submit" class="signup-btn">회원가입</button>
       </form>
     </div>
   </div>
@@ -34,42 +44,48 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 
+const apiUrl = import.meta.env.VITE_API_URL;
 const router = useRouter()
 
 const email = ref('')
 const password = ref('')
+const passwordChk = ref('');
 const nickname = ref('')
-const emailStatus = ref('') // 'checking', 'available', 'unavailable'
+const post = ref(false);
+const code = ref('');
+const isVerified = ref(false)
 
-const checkEmail = async () => {
-  if (!email.value) {
-    alert('이메일을 입력해주세요.')
-    return
-  }
+const message = computed(() => {
+  if (!email.value) return '이메일을 입력해주세요.'
+  if (isVerified.value === false) return '이메일 인증을 진행해주세요.'
+  if (!password.value) return '비밀번호를 입력해주세요.'
+  if (!passwordChk.value) return '비밀번호 확인을 입력해주세요.'
+  if (password.value !== passwordChk.value) return '비밀번호가 일치하지 않습니다.'
+  if (!nickname.value) return '닉네임을 입력해주세요.'
+  return '' // 모든 조건 만족
+})
 
-  emailStatus.value = 'checking'
-  try {
-    const res = await axios.post(`/api/user/check-email`, {
-      email: email.value
-    })
-    emailStatus.value = res.data.available ? 'available' : 'unavailable'
-  } catch (error) {
-    console.error(error)
-    alert('이메일 확인 중 오류가 발생했습니다.')
-    emailStatus.value = ''
+const sendCode = async () => {
+  post.value = true;
+  await axios.post(`${apiUrl}/email/verify`, { email: email.value })
+  alert('인증번호를 전송했습니다.')
+}
+
+const confirmCode = async () => {
+  const res = await axios.post(`${apiUrl}/email/confirm`, { email: email.value, code: code.value })
+  if (res.status === 200) {
+    isVerified.value = true
+    alert('인증 완료!')
+  } else {
+    alert('인증 실패!')
   }
 }
 
 const handleSignup = async () => {
-  // if (emailStatus.value !== 'available') {
-  //   alert('이메일 중복확인을 해주세요.')
-  //   return
-  // }
-
   try {
-    await axios.post(`/api/user/signup`, {
-    // await axios.post(`http://localhost:8080/user/signup`, {
+    await axios.post(`${apiUrl}/user/signup`, {
       email: email.value,
       password: password.value,
       nickname: nickname.value,
@@ -173,11 +189,19 @@ const handleSignup = async () => {
   box-shadow: 0 4px 16px 0 rgba(162, 89, 230, 0.15);
 }
 
-.verify-btn {
+.verify-container {
+  margin-top: 20px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+}
+
+.verify-btn {
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
   gap: 6px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   background: linear-gradient(90deg, #a259e6 0%, #62e0c6 100%);
   color: white;
   border: none;
@@ -234,4 +258,3 @@ const handleSignup = async () => {
   }
 }
 </style>
-  

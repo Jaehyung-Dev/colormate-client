@@ -160,9 +160,10 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
-import FeedbackButton from './FeedbackButton.vue';
+import FeedbackButton from '../components/FeedbackButton.vue';
 
 const isLogin = ref(false);
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const selectedSeason = ref('spring');
 const showAddModal = ref(false);
@@ -180,8 +181,7 @@ const colorCombinations = ref({
 
 const fetchColorCombinations = async () => {
   try {
-    // const res = await axios.get('http://localhost:8080/color/combinations');
-    const res = await axios.get('/api/color/combinations');
+    const res = await axios.get(`${apiUrl}/color/combinations`);
     const data = res.data;
 
     const toneOnTone = []
@@ -233,8 +233,7 @@ const addNewCombination = async () => {
   };
 
   try {
-    // await axios.post('http://localhost:8080/color/combination', combination);
-    await axios.post('/api/color/combination', combination);
+    await axios.post(`${apiUrl}/color/combination`, combination);
     await fetchColorCombinations();
 
     showAddModal.value = false;
